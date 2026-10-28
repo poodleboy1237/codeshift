@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeShift // The Code-To-Video Interactive Platform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Onboarding: Account Registration Screen First -->
+    <div id="auth-screen" class="auth-modal">
+        <div class="auth-card">
+            <h2>⚡ Create CodeShift Account</h2>
+            <p>Set up your unique developer identity handle before accessing the source arrays.</p>
+            <div class="form-group">
+                <label>Developer Handle</label>
+                <input type="text" id="reg-handle" placeholder="e.g., CyberWizard, ByteCrafter">
+            </div>
+            <div class="form-group">
+                <label>Developer Bio</label>
+                <textarea id="reg-bio" placeholder="What are your core engineering frameworks?"></textarea>
+            </div>
+            <button id="register-submit-btn" class="btn-prime">Initialize Identity Vector</button>
+        </div>
+    </div>
+
+    <!-- Main Platform Viewport Phone Container -->
+    <div class="viewport-phone" id="main-viewport" style="display: none;">
+        <div class="toast-popup" id="toast">Link copied!</div>
+
+        <!-- 1. FEED SCREEN VIEW -->
+        <div id="screen-home" class="app-screen active">
+            <canvas class="video-canvas" id="render-viewport"></canvas>
+            
+            <div class="overlay-hud">
+                <div class="header-meta">
+                    <span>CodeShift // Feed Grid</span>
+                    <span id="index-counter">Feed: 1 / 3</span>
+                </div>
+                
+                <div class="bottom-details">
+                    <div class="user-anchor" id="creator-trigger">
+                        <canvas class="pfp-canvas-small" id="hud-pfp"></canvas>
+                        <span class="user-tag" id="hud-handle">@Loading</span>
+                        <span class="vibecoded-badge" id="hud-vibe-badge" style="display: none;">VIBECODED</span>
+                        <span class="follow-btn" id="follow-trigger">FOLLOW</span>
+                    </div>
+                    <div class="caption-text" id="hud-caption">Initializing computational environment...</div>
+                </div>
+            </div>
+
+            <div class="right-action-dock">
+                <div class="hud-node" id="like-trigger">
+                    <div class="hud-circle" id="like-heart">❤️</div>
+                    <div class="hud-lbl" id="like-metric">0</div>
+                </div>
+                <div class="hud-node" id="comments-trigger">
+                    <div class="hud-circle">💬</div>
+                    <div class="hud-lbl" id="comment-metric">0</div>
+                </div>
+                <div class="hud-node" id="rules-trigger">
+                    <div class="hud-circle">📜</div>
+                    <div class="hud-lbl">Rules</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. STUDIO GENERATOR SCREEN VIEW -->
+        <div id="screen-create" class="app-screen">
+            <div class="screen-header"><h3>➕ CODE COMPILER STUDIO</h3></div>
+            <div class="studio-body">
+                <div class="form-group">
+                    <label>Video Caption / Concept Description</label>
+                    <input type="text" id="studio-caption" placeholder="Describe the running code...">
+                </div>
+                <div class="form-group" style="flex-grow: 1; display: flex; flex-direction: column;">
+                    <label>HTML5 2D Canvas Loop (JavaScript)</label>
+                    <textarea id="studio-code" class="ide-textarea" spellcheck="false">// Write your custom procedural logic loop here.
+// Available parameters: ctx (CanvasContext), t (Time elapsed), w (Width), h (Height)
+
+ctx.fillStyle = '#00ffaa';
+ctx.font = '24px monospace';
+ctx.fillText('HELLO CODE WORLD', 30, h/2);
+
+ctx.strokeStyle = '#0077ff';
+ctx.lineWidth = 3;
+ctx.beginPath();
+ctx.arc(w/2, h/2 + 50, Math.abs(Math.sin(t))*40, 0, Math.PI*2);
+ctx.stroke();</textarea>
+                </div>
+                <div class="vibe-toggle-row">
+                    <label class="switch-container">
+                        <input type="checkbox" id="studio-vibe-toggle">
+                        <span class="switch-slider"></span>
+                    </label>
+                    <div>
+                        <strong>#2 VibeCoded AI Disclosure Flag</strong>
+                        <p style="font-size: 10px; color: #64748b; margin-top: 2px;">Check this toggle switch if your rendering context module was generated using AI tools.</p>
+                    </div>
+                </div>
+                <button id="publish-video-btn" class="btn-prime" style="width: 100%; margin-top: 14px;">⚡ Publish to Feed Array</button>
+            </div>
+        </div>
+
+        <!-- 3. PROFILE DASHBOARD SCREEN VIEW -->
+        <div id="screen-profile" class="app-screen">
+            <div class="screen-header"><h3>👤 DEVELOPER REGISTRY</h3></div>
+            <div class="profile-hero">
+                <canvas class="pfp-canvas-large" id="my-profile-pfp"></canvas>
+                <h2 id="my-profile-handle" style="color: #fff; font-family: monospace;">@YourHandle</h2>
+                <div class="profile-counter">
+                    <div><strong id="my-profile-subs">0</strong> <span style="color:#64748b;">Followers</span></div>
+                    <div><strong id="my-profile-likes">0</strong> <span style="color:#64748b;">Likes Given</span></div>
+                </div>
+                <p id="my-profile-bio" style="font-size: 11px; color:#94a3b8; padding: 0 20px; line-height:1.4;"></p>
+                
+                <div style="margin-top: 30px; text-align: left; padding: 0 16px;">
+                    <h4 style="color: #00ffaa; font-size: 11px; letter-spacing: 1px; margin-bottom: 8px;">MY EXECUTING UPLOADS</h4>
+                    <div id="my-uploads-grid" class="video-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sliding Tray: Comments Interface -->
+        <div class="slide-tray" id="comments-tray">
+            <div class="tray-head"><span>COMMENTS TERMINAL</span><span class="btn-close" onclick="closeAllTrays()">✕</span></div>
+            <div class="tray-body" id="comments-log"></div>
+            <div class="input-bar">
+                <input type="text" class="input-box" id="comment-field" placeholder="Write comment pipeline string...">
+                <button class="btn-prime" id="post-comment-btn" style="padding: 6px 12px;">Push</button>
+            </div>
+        </div>
+
+        <!-- Sliding Tray: Manifesto/TOS Rules -->
+        <div class="slide-tray" id="rules-tray" style="height: 70%;">
+            <div class="tray-head"><span>📜 CODESHIFT PLATFORM MANIFESTO & TOS</span><span class="btn-close" onclick="closeAllTrays()">✕</span></div>
+            <div class="tray-body rules-content">
+                <h4>#1 THE REMIX PARADIGM CLAUSE</h4>
+                <p>If you fork, remix, or copy another engineer's active canvas code asset rendering algorithm framework, you are fundamentally required to transform or adjust its visual logic. Explicit raw structural cloning without optimization is prohibited.</p>
+                
+                <h4>#2 THE VIBECODED DISCLOSURE DIRECTIVE</h4>
+                <p>If your source compilation script was constructed or generated utilizing AI assistance systems, you must explicitly flag the VibeCoded toggle inside the creation array. Transparency builds cleaner debugging pipelines.</p>
+                
+                <h4>#3 ECOSYSTEM RESILIENCE CLAUSE</h4>
+                <p>Do not direct toxicity or hostile execution arguments toward other programmers regarding AI-disclosed streams. This is entirely a VibeCoded environment built on computational exploration and fun.</p>
+
+                <h4>#4 TERMS OF SERVICE</h4>
+                <p>By initializing your identity vector vector, you retain full ownership of your dynamic drawing canvases while granting CodeShift an execution license to loop your scripts seamlessly for all feed instances across browser client instances.</p>
+            </div>
+        </div>
+
+        <!-- Persistent Global Bottom Navigation Bar Tab Row Row -->
+        <div class="global-bottom-nav">
+            <div class="nav-tab active" data-target="screen-home">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </div>
+            <div class="nav-tab" data-target="screen-create">
+                <span class="nav-icon">➕</span>
+                <span class="nav-label">Create</span>
+            </div>
+            <div class="nav-tab" data-target="screen-profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
